@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use RakibDevs\Weather\Weather;
 
 class Locations extends Controller
 {
@@ -55,5 +57,24 @@ class Locations extends Controller
         $location->save();
 
         return redirect()->route('locations.index');
+    }
+
+    public function getWeather(string $city)
+    {
+        $locations = Location::all();
+        $weather = new Weather();
+
+        foreach ($locations as $location) {
+
+            $data = $weather->getCurrentByCord($location->latitude, $location->longitude);
+
+            $location->weather()->create([
+                'temperature' => $data->main->temp,
+                'humidity' => $data->main->humidity,
+                'wind_speed' => $data->wind->speed,
+            ]);
+
+            info("Weather data for location {$location->name} stored in the database.");
+        }
     }
 }
