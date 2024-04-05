@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold mb-8">Add Location</h1>
         <form action="{{ route('locations.store') }}" method="POST">
             @csrf
@@ -21,5 +20,4 @@
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add</button>
             </div>
         </form>
-    </div>
 @endsection

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Location;
+use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use RakibDevs\Weather\Weather;
+use Illuminate\Support\Carbon;
 
 class Locations extends Controller
 {
@@ -22,7 +22,25 @@ class Locations extends Controller
 
     public function show(Location $location)
     {
-        return view('locations.show', compact('location'));
+
+        $weather = $location->weather
+            ->sortBy('created_at')
+            ->filter(function ($value) {
+                return $value->created_at->diffInHours(now()) < 24;
+            });
+
+        $chart = (new LarapexChart())->lineChart()
+            ->setTitle('Weather Data')
+            ->addData('Temperature', $weather->pluck('temperature')->toArray())
+            ->addData('Humidity', $weather->pluck('humidity')->toArray())
+            ->addData('Wind Speed', $weather->pluck('wind_speed')->toArray())
+            ->setXAxis($weather->pluck('created_at')
+                ->transform(function ($value) {
+                    return Carbon::parse($value)->format('m. d. H:i');
+                })
+                ->toArray());
+
+        return view('locations.show', compact('location', 'chart'));
     }
 
     public function edit(Location $location)
