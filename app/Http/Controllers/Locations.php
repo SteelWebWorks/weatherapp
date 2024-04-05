@@ -58,23 +58,4 @@ class Locations extends Controller
 
         return redirect()->route('locations.index');
     }
-
-    public function getWeather(string $city)
-    {
-        $locations = Location::all();
-        $weather = new Weather();
-
-        foreach ($locations as $location) {
-
-            $data = $weather->getCurrentByCord($location->latitude, $location->longitude);
-
-            $location->weather()->create([
-                'temperature' => $data->main->temp,
-                'humidity' => $data->main->humidity,
-                'wind_speed' => $data->wind->speed,
-            ]);
-
-            info("Weather data for location {$location->name} stored in the database.");
-        }
-    }
 }
