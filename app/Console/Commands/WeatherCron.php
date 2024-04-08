@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 
 class WeatherCron extends Command
 {
@@ -28,16 +29,16 @@ class WeatherCron extends Command
         info("Cron Job running at ". now());
 
         $locations = \App\Models\Location::all();
-        $weather = new \RakibDevs\Weather\Weather();
 
         foreach ($locations as $location) {
 
-            $data = $weather->getCurrentByCord($location->latitude, $location->longitude);
-
+            $apiKey = env('OPENWEATHER_API_KEY', "");
+            $url = "https://api.openweathermap.org/data/2.5/weather?lat={$location->latitude}&lon={$location->longitude}&appid={$apiKey}";
+            $data = Http::get($url)->json();
             $location->weather()->create([
-                'temperature' => $data->main->temp,
-                'humidity' => $data->main->humidity,
-                'wind_speed' => $data->wind->speed,
+                'temperature' => $data['main']['temp'],
+                'humidity' => $data['main']['humidity'],
+                'wind_speed' => $data['wind']['speed'],
             ]);
 
             info("Weather data for location {$location->name} stored in the database.");

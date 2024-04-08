@@ -11,6 +11,7 @@ use \Illuminate\Foundation\Application;
 use \Illuminate\Contracts\View\Factory;
 use \Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use \Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Http;
 
 class Locations extends Controller
 {
