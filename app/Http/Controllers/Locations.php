@@ -105,15 +105,18 @@ class Locations extends Controller
 
         if ($request->has('id')) {
             $location = Location::find($request->id);
+            $location->name = $request->name;
+            $location->latitude = $request->latitude;
+            $location->longitude = $request->longitude;
+            $location->save();
         } else {
-            $location = new Location();
+            $location = Location::create([
+                'name' => $request->name,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+            ]);
         }
 
-        $location->name = $request->name;
-        $location->latitude = $request->latitude;
-        $location->longitude = $request->longitude;
-        $location->save();
-
-        return redirect()->route('locations.index');
+        return redirect()->route('locations.show', $location);
     }
 }
