@@ -9,5 +9,5 @@ Route::get('/delete/{location}', [\App\Http\Controllers\Locations::class, 'delet
 Route::get('/edit/{location}', [\App\Http\Controllers\Locations::class, 'edit'])->name('locations.edit');
 Route::get('/weather/{location}', [\App\Http\Controllers\Locations::class, 'show'])->name('locations.show');
 
-Route::post('/update', [\App\Http\Controllers\Locations::class, 'update'])->name('locations.update');
+Route::put('/update', [\App\Http\Controllers\Locations::class, 'store'])->name('locations.update');
 Route::post('/store', [\App\Http\Controllers\Locations::class, 'store'])->name('locations.store');

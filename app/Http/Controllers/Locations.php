@@ -6,21 +6,42 @@ use App\Models\Location;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use \Illuminate\Contracts\View\View;
+use \Illuminate\Foundation\Application;
+use \Illuminate\Contracts\View\Factory;
+use \Illuminate\Contracts\Foundation\Application as ApplicationContract;
+use \Illuminate\Http\RedirectResponse;
 
 class Locations extends Controller
 {
-    public function index()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View|Factory|Application|ApplicationContract
+     */
+    public function index(): View|Factory|Application|ApplicationContract
     {
         $locations = Location::all();
         return view('locations.locations', compact('locations'));
     }
 
-    public function create()
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return View|Factory|Application|ApplicationContract
+     */
+    public function create(): View|Factory|Application|ApplicationContract
     {
-        return view('locations.create');
+        return view('form');
     }
 
-    public function show(Location $location)
+    /**
+     * Display the specified resource.
+     *
+     * @param Location $location
+     * @return View|Factory|Application|ApplicationContract
+     */
+    public function show(Location $location): View|Factory|Application|ApplicationContract
     {
 
         $weather = $location->weather
@@ -28,6 +49,7 @@ class Locations extends Controller
             ->filter(function ($value) {
                 return $value->created_at->diffInHours(now()) < 24;
             });
+
 
         $chart = (new LarapexChart())->lineChart()
             ->setTitle('Weather Data')
@@ -40,22 +62,40 @@ class Locations extends Controller
                 })
                 ->toArray());
 
-        return view('locations.show', compact('location', 'chart'));
+        return view('locations.show', compact('location', 'chart', 'weather'));
     }
 
-    public function edit(Location $location)
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param Location $location
+     * @return View|Factory|Application|ApplicationContract
+     */
+    public function edit(Location $location): View|Factory|Application|ApplicationContract
     {
-        return view('locations.edit', compact('location'));
+        return view('form', compact('location'));
     }
 
 
-    public function delete(Location $location)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Location $location
+     * @return RedirectResponse
+     */
+    public function delete(Location $location): RedirectResponse
     {
         $location->delete();
         return redirect()->route('locations.index');
     }
 
-    public function store(Request $request)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required',
@@ -66,7 +106,7 @@ class Locations extends Controller
         if ($request->has('id')) {
             $location = Location::find($request->id);
         } else {
-            $location = new \App\Models\Location();
+            $location = new Location();
         }
 
         $location->name = $request->name;

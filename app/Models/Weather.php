@@ -17,6 +17,9 @@ class Weather extends Model
         'wind_speed',
     ];
 
+    /**
+     * Get the location that owns the weather data.
+     */
     public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class);

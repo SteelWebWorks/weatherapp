@@ -12,6 +12,9 @@ class Location extends Model
 
     protected $fillable = ['name', 'latitude', 'longitude'];
 
+    /**
+     * Get the weather data for the location.
+     */
     public function weather(): HasMany
     {
         return $this->hasMany(Weather::class);

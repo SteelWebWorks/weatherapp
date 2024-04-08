@@ -23,7 +23,7 @@ class WeatherCron extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         info("Cron Job running at ". now());
 
